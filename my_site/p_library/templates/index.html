@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+</head>    
+<body>
+    
+    ПРИВЕТ! Добро пожаловать в {{title}}. <br>
+    Представляю {{books|length }} книг из моей коллекции. 
+    <table border="1">
+        {% for book in books %}
+        <tr>
+            <td>{{book.title }}</td>
+            <td>{{book.ISBN }}</td>
+            <td>{{book.description }}</td>
+            <td>{{book.year_release }}</td>
+            <td>{{book.author.full_name }}</td>
+            <td>{{book.author.country }}</td>
+            <td>{{book.copy_count }}</td>
+            <td>
+                <form action="/index/book_increment/" metod="post" enctype="rultipart/form-data">{% csrf_token %}
+                    <input type="hidden" name="id" value="{{book.id}}"/>
+                    <input type="submit" value="Увеличить количество" />
+                </form>
+                <form action="/index/book_decrement/" metod="post" enctype="rultipart/form-data">{% csrf_token %}
+                    <input type="hidden" name="id" value="{{book.id}}"/>
+                    <input type="submit" value="Уменьшить количество" />
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <ul class="list-group col-11 mx-auto">
+        {% for publisher in publishers %}
+            <li class="list-group-item list-group-item-primary">{{ publisher.name }}
+                <span class="badge">{{ publisher.books.all|length }}</span>
+                <ul>
+                {% for book in publisher.books.all %}
+                    <li class="list-group-item list-group-item-secondary">{{ book.title }} -- {{ year }}</li>
+                {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
